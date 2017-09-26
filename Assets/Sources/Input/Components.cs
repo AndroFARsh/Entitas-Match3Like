@@ -37,10 +37,4 @@ namespace Input {
     {
         public Vector2 value;
     }
-    
-    [Input]
-    public class LevelButtonComponent : IComponent 
-    {
-        public LevelBlueprint value;
-    }
 }

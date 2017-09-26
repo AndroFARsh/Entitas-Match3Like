@@ -34,11 +34,7 @@ namespace Input.Components.Systems
                 .Select(hit => hit.collider.transform.position)
                 .SelectMany(pos => _context.GetEntitiesWithPosition(pos).Slinq())
                 .Where(e => e.isInteractive)
-                .ForEach(e =>
-                {
-                    var value = e.isSelected;
-                    e.isSelected = !value;
-                });
+                .ForEach(e => e.isSelected = !e.isSelected);
         }
     }
 }
