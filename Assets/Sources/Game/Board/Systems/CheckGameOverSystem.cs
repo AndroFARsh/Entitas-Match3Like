@@ -6,7 +6,6 @@ using Smooth.Slinq;
 using Smooth.Slinq.Context;
 using UnityEngine;
 using static System.Math;
-using static GameMatcher;
 
 namespace Game.Board.Systems
 {
@@ -25,7 +24,7 @@ namespace Game.Board.Systems
 
         protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context)
         {
-            return context.CreateCollector(Animating, GroupEvent.Removed);
+            return context.CreateCollector(GameMatcher.Animating, GroupEvent.Removed);
         }
 
         protected override bool Filter(GameEntity entity)
@@ -35,8 +34,12 @@ namespace Game.Board.Systems
 
         protected override void Execute(List<GameEntity> entities)
         {
-            // Search vertical lines xoox
-            var vSearch = Search2ItemInChaine(Axis.X, Axis.X, Axis.Y)
+            _context.isGameOver = IsGameOver();
+        }
+
+        private bool IsGameOver()
+        {
+            return !Search2ItemInChaine(Axis.X, Axis.X, Axis.Y)
                 .Where(ls => IsStepAllowed(ls[0].sprite.value,
                                  SearchItemAtPosition(ls[0].position.value + Vector2.down),
                                  Vector2.right,
@@ -47,41 +50,27 @@ namespace Game.Board.Systems
                                  Vector2.left,
                                  Vector2.up,
                                  Vector2.right))
-                .SelectMany(ls => ls.Slinq());
-
-
-            // Search horizontal lines xoox
-            var hSearch = Search2ItemInChaine(Axis.Y, Axis.Y, Axis.X)
-                .Where(ls => IsStepAllowed(ls[0].sprite.value,
-                                SearchItemAtPosition(ls[0].position.value + Vector2.left),
-                                 Vector2.left,
-                                 Vector2.up,
-                                 Vector2.down) ||
-                             IsStepAllowed(ls[ls.Count - 1].sprite.value,
-                                 SearchItemAtPosition(ls[ls.Count - 1].position.value + Vector2.right),
-                                 Vector2.right,
-                                 Vector2.up,
-                                 Vector2.down))
-                .SelectMany(ls => ls.Slinq());
-
-            // Search horizontal lines oxo
-            var hSearchMP = _itemGroup.GetEntities()
-                .Slinq()
-                .OrderBy((e1, e2) => e1.OrderBy(e2, Axis.Y, Axis.X))
-                .Where((e, buffer) => IsAllowSpetMiddlePattern(e, buffer, Axis.Y, Vector2.up, Vector2.down),
-                    new List<GameEntity>());
-
-            // Search vertical lines oxo
-            var vSearchMP = _itemGroup.GetEntities()
-                .Slinq()
-                .OrderBy((e1, e2) => e1.OrderBy(e2, Axis.X, Axis.Y))
-                .Where((e, buffer) => IsAllowSpetMiddlePattern(e, buffer, Axis.X, Vector2.left, Vector2.right),
-                    new List<GameEntity>());
-
-            _context.isGameOver = !vSearch
-                .Concat(hSearch)
-                .Concat(vSearchMP)
-                .Concat(hSearchMP)
+                .SelectMany(ls => ls.Slinq())
+                .Concat(Search2ItemInChaine(Axis.Y, Axis.Y, Axis.X)
+                    .Where(ls => IsStepAllowed(ls[0].sprite.value,
+                                     SearchItemAtPosition(ls[0].position.value + Vector2.left),
+                                     Vector2.left,
+                                     Vector2.up,
+                                     Vector2.down) ||
+                                 IsStepAllowed(ls[ls.Count - 1].sprite.value,
+                                     SearchItemAtPosition(ls[ls.Count - 1].position.value + Vector2.right),
+                                     Vector2.right,
+                                     Vector2.up,
+                                     Vector2.down))
+                    .SelectMany(ls => ls.Slinq()))
+                .Concat(_itemGroup.GetEntities()
+                    .Slinq()
+                    .OrderBy((e1, e2) => e1.OrderBy(e2, Axis.Y, Axis.X))
+                    .Where((e, buffer) => IsAllowSpetMiddlePattern(e, buffer, Axis.Y, Vector2.up, Vector2.down), new List<GameEntity>()))
+                .Concat(_itemGroup.GetEntities()
+                    .Slinq()
+                    .OrderBy((e1, e2) => e1.OrderBy(e2, Axis.X, Axis.Y))
+                    .Where((e, buffer) => IsAllowSpetMiddlePattern(e, buffer, Axis.X, Vector2.left, Vector2.right), new List<GameEntity>()))
                 .Any();
         }
 
@@ -89,8 +78,10 @@ namespace Game.Board.Systems
         {
             return _context.GetEntitiesWithPosition(position).Slinq().FirstOrDefault();
         }
-        
-        private Slinq<List<GameEntity>, PredicateContext<List<GameEntity>, BufferPredicateContext<GameEntity, LinkedContext<GameEntity>>>> Search2ItemInChaine(Axis bufferBy, params Axis[] orderBy)
+
+        private Slinq<List<GameEntity>, PredicateContext<List<GameEntity>,
+            BufferPredicateContext<GameEntity, LinkedContext<GameEntity>>>> Search2ItemInChaine(Axis bufferBy,
+            params Axis[] orderBy)
         {
             return _itemGroup.GetEntities()
                 .Slinq()
@@ -99,11 +90,14 @@ namespace Game.Board.Systems
                 .Where(ls => ls.Count == 2 && ls.Slinq().First().isInteractive);
         }
 
-        private bool IsAllowSpetMiddlePattern(GameEntity e, IList<GameEntity> buffer, Axis axis, params Vector2[] offsets)
+        private bool IsAllowSpetMiddlePattern(GameEntity e, IList<GameEntity> buffer, Axis axis,
+            params Vector2[] offsets)
         {
             return Tuple.Create(buffer, e)
                 .MatchTo<Tuple<IList<GameEntity>, GameEntity>, Tuple<IList<GameEntity>, GameEntity>>()
-                .Where(_ =>  _.Item1.Count > 0 && Abs(_.Item1[_.Item1.Count - 1].position.value[(int)axis] - _.Item2.position.value[(int)axis])  > 0.01f)
+                .Where(_ => _.Item1.Count > 0 &&
+                            Abs(_.Item1[_.Item1.Count - 1].position.value[(int) axis] -
+                                _.Item2.position.value[(int) axis]) > 0.01f)
                 .Return(_ =>
                 {
                     // next row||col
@@ -114,10 +108,10 @@ namespace Game.Board.Systems
                 .Result()
                 .MatchTo<Tuple<IList<GameEntity>, GameEntity>, bool>()
                 .Where(_ => _.Item1.Count == 0 ||
-                              (_.Item1.Count == 1 && !_.Item1[0].sprite.value.Equals(_.Item2.sprite.value)))
+                            (_.Item1.Count == 1 && !_.Item1[0].sprite.value.Equals(_.Item2.sprite.value)))
                 .Return(_ => UpdateBuffer(_.Item2, _.Item1))
                 .Where(_ => (_.Item1.Count == 1 && _.Item1[0].sprite.value.Equals(_.Item2.sprite.value)) ||
-                              (_.Item1.Count == 2 && !_.Item1[0].sprite.value.Equals(_.Item2.sprite.value)))
+                            (_.Item1.Count == 2 && !_.Item1[0].sprite.value.Equals(_.Item2.sprite.value)))
                 .Return(_ => UpdateBuffer(_.Item2, _.Item1, 0))
                 .Where(_ => _.Item1.Count == 2 && _.Item1[0].sprite.value.Equals(_.Item2.sprite.value))
                 .Return(_ =>
@@ -128,29 +122,25 @@ namespace Game.Board.Systems
                 .Else(_ => false)
                 .Result();
         }
-        
+
         private bool IsStepAllowed(Sprite sprite, GameEntity item, params Vector2[] offsets)
-        {          
-            var res = item.MatchTo<GameEntity, bool>()
+        {
+            return item.MatchTo<GameEntity, bool>()
                 .Where(i => i != null)
                 .Return(i => offsets
                     .Slinq()
                     .Where((offset, allow) => allow, i.isInteractive)
                     .Select((offset, position) => position + offset, i.position.value)
                     .SelectMany((p, context) => context.GetEntitiesWithPosition(p).Slinq(), _context)
-                    .Any((e, t) => !t.Item1.Equals(e.position.value) && t.Item2.Equals(e.sprite.value), Tuple.Create(i.position.value, sprite))
+                    .Any((e, t) => !t.Item1.Equals(e.position.value) && t.Item2.Equals(e.sprite.value),
+                        Tuple.Create(i.position.value, sprite))
                 )
                 .Else(i => false)
                 .Result();
-
-            if (res)
-                Debug.Log($"Allow step:{item.position.value} sprite:{sprite.name}");
-            
-
-            return res;
         }
 
-        private static bool UpdateBuffer(GameEntity entity, IList<GameEntity> buffer, int removeIndex = -1, bool result = false)
+        private static bool UpdateBuffer(GameEntity entity, IList<GameEntity> buffer, int removeIndex = -1,
+            bool result = false)
         {
             if (removeIndex >= 0 && removeIndex < buffer.Count) buffer.RemoveAt(removeIndex);
             if (entity != null) buffer.Add(entity);
