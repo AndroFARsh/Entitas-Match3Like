@@ -4,20 +4,17 @@ using Smooth.Foundations.PatternMatching.GeneralMatcher;
 using Smooth.Slinq;
 using UniInput = UnityEngine.Input;
 using UnityEngine;
-using static InputMatcher;
 
 namespace Input.Components.Systems
 {
-    public class EmitMouseInputSystem : IInitializeSystem, IExecuteSystem, ICleanupSystem
+    public class EmitMouseInputSystem : IInitializeSystem, IExecuteSystem
     {
         private readonly InputContext _context;
-        private readonly List<InputEntity> _entities = new List<InputEntity>();
-        private readonly IGroup<InputEntity> _group;
-
+        private readonly IList<InputEntity> _entities = new List<InputEntity>();
+       
         public EmitMouseInputSystem(Contexts contexts)
         {
             _context = contexts.input;
-            _group = _context.GetGroup(AnyOf(ButtonDown, ButtonPressed, ButtonUp));
         }
 
         public void Initialize()
@@ -25,11 +22,11 @@ namespace Input.Components.Systems
             _context.isLeftMouseButton = true;
             _entities.Add(_context.leftMouseButtonEntity);
             
-//            _context.isRightMouseButton = true;
-//            _entities.Add(_context.rightMouseButtonEntity);
-//            
-//            _context.isMiddleMouseButton = true;
-//            _entities.Add(_context.middleMouseButtonEntity);
+            _context.isRightMouseButton = true;
+            _entities.Add(_context.rightMouseButtonEntity);
+            
+            _context.isMiddleMouseButton = true;
+            _entities.Add(_context.middleMouseButtonEntity);
         }
 
         public void Execute()
@@ -48,11 +45,6 @@ namespace Input.Components.Systems
                         .IgnoreElse()
                         .Exec();
               });
-        }
-
-        public void Cleanup()
-        {
-          //  _group.GetEntities().Slinq().ForEach(e => e.Destroy());
         }
     }
 }
