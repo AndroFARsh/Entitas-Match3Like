@@ -53,13 +53,13 @@ namespace Game.View.Systems
             var p1 = i1.position.value;
             var p2 = i2.position.value;
             
-            var allow = (Math.Abs(p1.y - p2.y) < 0.01f &&
-                    (Math.Abs(p1.x - (p2.x - 1)) < 0.01f ||
-                     Math.Abs(p1.x - (p2.x + 1)) < 0.01f)) ||
+            var allow = (Math.Abs(p1.Y - p2.Y) < 0.01f &&
+                    (Math.Abs(p1.X - (p2.X - 1)) < 0.01f ||
+                     Math.Abs(p1.X - (p2.X + 1)) < 0.01f)) ||
                    
-                   (Math.Abs(p1.x - p2.x) < 0.01f &&
-                    (Math.Abs(p1.y - (p2.y - 1)) < 0.01f ||
-                     Math.Abs(p1.y - (p2.y + 1)) < 0.01f));
+                   (Math.Abs(p1.X - p2.X) < 0.01f &&
+                    (Math.Abs(p1.Y - (p2.Y - 1)) < 0.01f ||
+                     Math.Abs(p1.Y - (p2.Y + 1)) < 0.01f));
             if (allow)
             {
                 return IsMatch3(i1, p2, true) ||
@@ -70,25 +70,24 @@ namespace Game.View.Systems
             return false;
         }
 
-        private bool IsMatch3(GameEntity entity, Vector2 newPos, bool horizontal)
+        private bool IsMatch3(GameEntity entity, IntVector2 newPos, bool horizontal)
         {
-            var index = horizontal ? 0 : 1;
+            var direction = horizontal ? IntVector2.Right : IntVector2.Up;
             var sprite = entity.sprite.value;
 
             var chainLength = 1;
             // Look forward
-            IsMatch3(sprite, entity.position.value, newPos, index, 1, ref chainLength);
+            IsMatch3(sprite, entity.position.value, newPos + direction, ref chainLength);
             // Look backward
-            IsMatch3(sprite, entity.position.value, newPos, index, -1, ref chainLength);
+            IsMatch3(sprite, entity.position.value, newPos - direction, ref chainLength);
             
             return chainLength >= MATCH_3;
         }
 
-        private void IsMatch3(Sprite sprite, Vector2 pos, Vector2 newPos, int index, int step, ref int chainLength)
+        private void IsMatch3(int sprite, IntVector2 pos, IntVector2 newPos, ref int chainLength)
         {
             do
             {
-                newPos[index] += step;
                 if (pos.Equals(newPos)) return;
                     
                 var count = _context.GetEntitiesWithPosition(newPos)

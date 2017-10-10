@@ -6,6 +6,8 @@ namespace Game.View
     {
         public GameViewSystems(Contexts contexts)
         {
+            Add(new InitCameraPositionSystem(contexts));
+            
             Add(new RemoveViewSystem(contexts));
             Add(new AddViewSystem(contexts));
             Add(new SetPositionSystem(contexts));

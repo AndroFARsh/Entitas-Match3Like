@@ -8,16 +8,16 @@
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    static readonly Game.ReomveComponent reomveComponent = new Game.ReomveComponent();
+    static readonly Game.RemoveComponent removeComponent = new Game.RemoveComponent();
 
-    public bool isReomve {
-        get { return HasComponent(GameComponentsLookup.Reomve); }
+    public bool isRemove {
+        get { return HasComponent(GameComponentsLookup.Remove); }
         set {
-            if (value != isReomve) {
+            if (value != isRemove) {
                 if (value) {
-                    AddComponent(GameComponentsLookup.Reomve, reomveComponent);
+                    AddComponent(GameComponentsLookup.Remove, removeComponent);
                 } else {
-                    RemoveComponent(GameComponentsLookup.Reomve);
+                    RemoveComponent(GameComponentsLookup.Remove);
                 }
             }
         }
@@ -34,17 +34,17 @@ public partial class GameEntity {
 //------------------------------------------------------------------------------
 public sealed partial class GameMatcher {
 
-    static Entitas.IMatcher<GameEntity> _matcherReomve;
+    static Entitas.IMatcher<GameEntity> _matcherRemove;
 
-    public static Entitas.IMatcher<GameEntity> Reomve {
+    public static Entitas.IMatcher<GameEntity> Remove {
         get {
-            if (_matcherReomve == null) {
-                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.Reomve);
+            if (_matcherRemove == null) {
+                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.Remove);
                 matcher.componentNames = GameComponentsLookup.componentNames;
-                _matcherReomve = matcher;
+                _matcherRemove = matcher;
             }
 
-            return _matcherReomve;
+            return _matcherRemove;
         }
     }
 }

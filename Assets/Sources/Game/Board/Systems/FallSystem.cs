@@ -4,64 +4,56 @@ using Smooth.Slinq;
 
 namespace Game.Board.Systems
 {
-    public class FallItemSystem : ReactiveSystem<GameEntity>, ICleanupSystem
+    public class FallItemSystem : ReactiveSystem<GameEntity>
     {
         private readonly GameContext _context;
-        private readonly IGroup<GameEntity> _removed;
 
         public FallItemSystem(Contexts contexts) : base(contexts.game)
         {
             _context = contexts.game;
-            _removed = _context.GetGroup(GameMatcher.Reomve);
         }
 
         protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context)
         {
-            return context.CreateCollector(GameMatcher.Reomve, GroupEvent.Added);
+            return context.CreateCollector(GameMatcher.Item, GroupEvent.Removed);
         }
 
         protected override bool Filter(GameEntity entity)
         {
-            return true;
+            return !_context.isGameOver && _context.hasBoard && !_context.boardEntity.isIntialize;
         }
 
         protected override void Execute(List<GameEntity> entities)
         {
-            entities
-                .Slinq()
-                .OrderBy((e1, e2) => e1.OrderBy(e2, Axis.X, Axis.Y))
-                .ForEach(ItemMoveDown, _context);
-        }
-        
-        public void Cleanup()
-        {
-            _removed
-                .GetEntities()
-                .Slinq()
-                .ForEach(e => e.isReomve = false);
+            var size = _context.board.value.Size;
+            for (var col=0; col < size.Columns; ++col) {
+                for (var row = 0; row < size.Rows; ++row)
+                {
+                    // search empty element;
+                    var pos = new IntVector2(col, row);
+                    if (_context.GetEntitiesWithPosition(pos).Count != 0) continue;
+                    // search next not empty element;
+                    
+                    if (!MoveNotEmptyElementDown(pos, size.Rows)) break;
+                }
+            }
         }
 
-        internal static void ItemMoveDown(GameEntity e1, GameContext context)
+        private bool MoveNotEmptyElementDown(IntVector2 emptyPos, int max)
         {
-            var pos = e1.position.value;
-            do
+            var pos = emptyPos;
+            while (pos.Y < max)
             {
-                pos.y += 1;
-                var ls =context.GetEntitiesWithPosition(pos)
-                    .Slinq()
-                    .Where(e => !e.isReomve)
-                    .ToList();
-                    
-                    
-                    ls.Slinq().ForEach(e2 =>
-                    {
-                        // shwitch position
-                        var tmpPos = e1.position.value;
-                        e1.ReplacePosition(pos);
-                        e2.ReplacePosition(tmpPos);
-                        pos = tmpPos;
-                    });
-            } while (pos.y < context.board.value.Size.Rows);
+                pos = pos + IntVector2.Up;
+                var items = _context.GetEntitiesWithPosition(pos);
+                if (items.Count != 0)
+                {
+                    items.Slinq().ToList().Slinq()
+                        .ForEach((e, p) => e.ReplacePosition(p), emptyPos);
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

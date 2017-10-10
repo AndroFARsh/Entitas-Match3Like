@@ -16,12 +16,12 @@ namespace Game.State.Systems
 
         protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context)
         {
-            return context.CreateCollector(Reomve, Added);
+            return context.CreateCollector(Remove, Added);
         }
 
         protected override bool Filter(GameEntity entity)
         {
-            return _context.hasBoard;
+            return _context.hasBoard && !_context.boardEntity.isIntialize;
         }
 
         protected override void Execute(List<GameEntity> entities)

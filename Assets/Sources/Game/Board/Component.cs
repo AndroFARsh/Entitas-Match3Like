@@ -11,7 +11,7 @@ namespace Game
         public LevelBlueprint value;
     }
     
-    [Game, Unique]
+    [Game]
     public class IntializeComponent : IComponent
     {
     }

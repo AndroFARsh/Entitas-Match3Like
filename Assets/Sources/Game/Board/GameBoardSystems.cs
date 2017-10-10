@@ -6,13 +6,22 @@ namespace Game.Board
     {
         public GameBoardSystems(Contexts contexts)
         {
-            Add(new InitCameraPositionSystem(contexts));
             Add(new DestroyBoardSystem(contexts));
-            Add(new InitBoardSystem(contexts));
-            Add(new MatchLineSystem(contexts));
-            Add(new CheckGameOverSystem(contexts));
+           
             Add(new FallItemSystem(contexts));
             Add(new FillItemSystem(contexts));
+            
+            Add(new InitBoardSystem(contexts));
+            Add(new MatchLineSystem(contexts));
+            
+            Add(new CheckBoardInitializationSystem(contexts));
+            Add(new CheckGameOverSystem(contexts));
+            
+            Add(new RegenBoardItemSystem(contexts));
+
+
+            
+
         }
     }
 }

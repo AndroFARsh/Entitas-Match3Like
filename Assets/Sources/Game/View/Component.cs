@@ -15,7 +15,7 @@ namespace Game
     }
     
     [Game]
-    public class ReomveComponent : IComponent
+    public class RemoveComponent : IComponent
     {
     }
     
@@ -29,20 +29,17 @@ namespace Game
     public class PositionComponent : IComponent
     {
         [EntityIndex]
-        public Vector2 value;
+        public IntVector2 value;
     }
 
     [Game]
     public class SpriteComponent : IComponent
     {
-        public Sprite value;
+        public int value;
     }
     
     [Game]
     public class InteractiveComponent : IComponent {}
-    
-    [Game]
-    public class MovableComponent : IComponent {}
     
     [Game]
     public class SelectedComponent : IComponent {}

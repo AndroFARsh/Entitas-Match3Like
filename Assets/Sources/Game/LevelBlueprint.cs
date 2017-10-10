@@ -1,6 +1,7 @@
 ﻿using System;
 using Smooth.Algebraics;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Game
 {
@@ -37,6 +38,8 @@ namespace Game
 
         public int Rows => _rows;
 
+        public int Items => Columns * Rows;
+        
         #if UNITY_EDITOR
         internal void OnValidate()
         {
@@ -59,12 +62,15 @@ namespace Game
         [SerializeField] private Sprite[] _notInteractive;
         
         [Range(0,1)]
-        [SerializeField] float _distribution = 1f;
+        [SerializeField] private float _distribution = 1f;
         
         public GameObject Prefab => _prefab;
         public Sprite[] Interactive => _interactive;
         public Sprite[] NotInteractive => _notInteractive;
         public float Distribution => _distribution;
+
+        public int GetRandomInteractive() => Random.Range(0, Interactive.Length);
+        public int GetRandomNotInteractive() => Random.Range(0, NotInteractive.Length);
         
         #if UNITY_EDITOR
         internal void OnValidate()

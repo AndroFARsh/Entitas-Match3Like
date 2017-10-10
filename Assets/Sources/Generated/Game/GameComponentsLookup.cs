@@ -14,15 +14,14 @@ public static class GameComponentsLookup {
     public const int Interactive = 3;
     public const int Intialize = 4;
     public const int Item = 5;
-    public const int Movable = 6;
-    public const int Position = 7;
-    public const int Reomve = 8;
-    public const int Score = 9;
-    public const int Selected = 10;
-    public const int Sprite = 11;
-    public const int View = 12;
+    public const int Position = 6;
+    public const int Remove = 7;
+    public const int Score = 8;
+    public const int Selected = 9;
+    public const int Sprite = 10;
+    public const int View = 11;
 
-    public const int TotalComponents = 13;
+    public const int TotalComponents = 12;
 
     public static readonly string[] componentNames = {
         "Animating",
@@ -31,9 +30,8 @@ public static class GameComponentsLookup {
         "Interactive",
         "Intialize",
         "Item",
-        "Movable",
         "Position",
-        "Reomve",
+        "Remove",
         "Score",
         "Selected",
         "Sprite",
@@ -47,9 +45,8 @@ public static class GameComponentsLookup {
         typeof(Game.InteractiveComponent),
         typeof(Game.IntializeComponent),
         typeof(Game.ItemComponent),
-        typeof(Game.MovableComponent),
         typeof(Game.PositionComponent),
-        typeof(Game.ReomveComponent),
+        typeof(Game.RemoveComponent),
         typeof(Game.ScoreComponent),
         typeof(Game.SelectedComponent),
         typeof(Game.SpriteComponent),

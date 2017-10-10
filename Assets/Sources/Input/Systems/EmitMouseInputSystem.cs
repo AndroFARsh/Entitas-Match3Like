@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Entitas;
+using Game;
 using Smooth.Foundations.PatternMatching.GeneralMatcher;
 using Smooth.Slinq;
 using UniInput = UnityEngine.Input;

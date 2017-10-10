@@ -7,34 +7,32 @@ using UnityEngine;
 
 namespace  Game.View.Systems
 {
-    public class AddViewSystem : ReactiveSystem<GameEntity>
+    public class AddViewSystem : IExecuteSystem
     {
         private const string NAME = "Board";
         
         private readonly Transform _container = new GameObject(NAME).transform;
         private readonly GameContext _context;
-        
-        public AddViewSystem(Contexts contexts) : base(contexts.game)
+        private readonly IGroup<GameEntity> _group;
+
+        public AddViewSystem(Contexts contexts)
         {
             _context = contexts.game;
+            _group = _context.GetGroup(GameMatcher.Item);
         }
 
-        protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context)
+        private bool IsExecute()
         {
-            return context.CreateCollector(GameMatcher.Sprite);
+            return _context.hasBoard && !_context.boardEntity.isIntialize && _group.count > 0;
         }
 
-        protected override bool Filter(GameEntity entity)
+        public void Execute()
         {
-            return _context.hasBoard && 
-                   !entity.hasView && 
-                   !entity.isReomve;
-        }
-
-        protected override void Execute(List<GameEntity> entities)
-        {
-            entities
+            if (!IsExecute()) return;
+            
+            _group.GetEntities()
                 .Slinq()
+                .Where(e => !e.hasView)
                 .ForEach(e =>
                     {
                         Object.Instantiate(_context.board.value.Items.Prefab)

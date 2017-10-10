@@ -1,6 +1,5 @@
 ﻿using Entitas;
 using Entitas.CodeGeneration.Attributes;
-using Game;
 using UnityEngine;
 
 namespace Input {
