@@ -1,4 +1,4 @@
-﻿using Input.Components.Systems;
+﻿using Input.Systems;
 
 namespace Input
 {
@@ -7,7 +7,6 @@ namespace Input
         public InputSystems(Contexts contexts)
         {
             Add(new EmitMouseInputSystem(contexts));
-            Add(new SelectItemSystem(contexts));
         }
     }
 }

@@ -8,15 +8,15 @@
 //------------------------------------------------------------------------------
 public partial class GameContext {
 
-    public GameEntity intializeEntity { get { return GetGroup(GameMatcher.Intialize).GetSingleEntity(); } }
+    public GameEntity gameControllerEntity { get { return GetGroup(GameMatcher.GameController).GetSingleEntity(); } }
 
-    public bool isIntialize {
-        get { return intializeEntity != null; }
+    public bool isGameController {
+        get { return gameControllerEntity != null; }
         set {
-            var entity = intializeEntity;
+            var entity = gameControllerEntity;
             if (value != (entity != null)) {
                 if (value) {
-                    CreateEntity().isIntialize = true;
+                    CreateEntity().isGameController = true;
                 } else {
                     entity.Destroy();
                 }
@@ -35,16 +35,16 @@ public partial class GameContext {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    static readonly Game.IntializeComponent intializeComponent = new Game.IntializeComponent();
+    static readonly Game.GameControllerComponent gameControllerComponent = new Game.GameControllerComponent();
 
-    public bool isIntialize {
-        get { return HasComponent(GameComponentsLookup.Intialize); }
+    public bool isGameController {
+        get { return HasComponent(GameComponentsLookup.GameController); }
         set {
-            if (value != isIntialize) {
+            if (value != isGameController) {
                 if (value) {
-                    AddComponent(GameComponentsLookup.Intialize, intializeComponent);
+                    AddComponent(GameComponentsLookup.GameController, gameControllerComponent);
                 } else {
-                    RemoveComponent(GameComponentsLookup.Intialize);
+                    RemoveComponent(GameComponentsLookup.GameController);
                 }
             }
         }
@@ -61,17 +61,17 @@ public partial class GameEntity {
 //------------------------------------------------------------------------------
 public sealed partial class GameMatcher {
 
-    static Entitas.IMatcher<GameEntity> _matcherIntialize;
+    static Entitas.IMatcher<GameEntity> _matcherGameController;
 
-    public static Entitas.IMatcher<GameEntity> Intialize {
+    public static Entitas.IMatcher<GameEntity> GameController {
         get {
-            if (_matcherIntialize == null) {
-                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.Intialize);
+            if (_matcherGameController == null) {
+                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.GameController);
                 matcher.componentNames = GameComponentsLookup.componentNames;
-                _matcherIntialize = matcher;
+                _matcherGameController = matcher;
             }
 
-            return _matcherIntialize;
+            return _matcherGameController;
         }
     }
 }

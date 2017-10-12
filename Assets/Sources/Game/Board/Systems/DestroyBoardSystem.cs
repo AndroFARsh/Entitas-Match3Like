@@ -1,9 +1,5 @@
-﻿using System.Collections.Generic;
-using Entitas;
-using Entitas.Unity;
+﻿using Entitas;
 using Smooth.Algebraics;
-using Smooth.Slinq;
-using Object = UnityEngine.Object;
 
 namespace Game.Board.Systems
 {
@@ -18,22 +14,10 @@ namespace Game.Board.Systems
             _group = contexts.game.GetGroup(GameMatcher.Item);
         }
         
-        
         public void Cleanup()
         {
-            if (!_context.isGameOver) return;
+            if (!_context.isGameOver && _group.count != 0) return;
             
-            _group
-                .GetEntities()
-                .Slinq()
-                .Where(e => e.hasView)
-                .ForEach(e =>
-                {
-                    var go = e.view.value;
-                    go.Unlink();
-                    Object.Destroy(go);
-                    e.Destroy();
-                });
             _context.boardEntity.ToOption().ForEach(e => e.Destroy());
         }
     }

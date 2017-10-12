@@ -6,7 +6,7 @@ using Smooth.Algebraics;
 using Smooth.Slinq;
 using UnityEngine;
 
-namespace  Game.View.Systems
+namespace Game.View.Systems
 {
     public class RemoveViewSystem : ReactiveSystem<GameEntity>
     {
@@ -16,12 +16,13 @@ namespace  Game.View.Systems
 
         protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context)
         {
-            return context.CreateCollector(GameMatcher.Reomve, GroupEvent.Removed);
+            return context.CreateCollector(GameMatcher.AllOf(GameMatcher.Remove,GameMatcher.View)
+                                                      .NoneOf(GameMatcher.Animating));
         }
 
         protected override bool Filter(GameEntity entity)
         {
-            return entity.hasView;
+            return true;
         }
 
         protected override void Execute(List<GameEntity> entities)
@@ -34,25 +35,26 @@ namespace  Game.View.Systems
         private static void DestroyView(GameEntity entity)
         {
             entity.ToOption()
-                .Select(e => Tuple.Create(e.view.value, e))
-                .ForEach(t => t.Item1.transform
-                    .DOScale(Vector3.one * 1.2f, 0.2f)
-                    .OnComplete(() =>
-                    {
-                        t.Item1.Unlink();
-                        Object.Destroy(t.Item1);
-                    }))
-                .Select(t => Tuple.Create(t.Item1.GetComponent<SpriteRenderer>(), t.Item2))
-                .ForEach(t =>
+                .Select(e => e.view.value)
+                .ForEach(go =>
                 {
-                    var color = t.Item1.color;
-                    color.a = 0.0f;
-                    t.Item1.material.DOColor(color, 0.2f)
-                        .OnStart(() => t.Item2.isAnimating = true)
-                        .OnComplete(() => t.Item2.isAnimating = false);
+                    go.transform.DOScale(Vector3.one * 1.2f, 0.5f)
+                        .OnComplete(() =>
+                        {
+                            go.Unlink();
+                            Object.Destroy(go);
+                            entity.Destroy();
+                        });
+                    go.TryGetComponent<SpriteRenderer>()
+                        .ForEach(sr =>
+                        {
+                            var color = sr.color;
+                            color.a = 0.0f;
+                            sr.material.DOColor(color, 0.5f)
+                                .OnStart(() => entity.isAnimating = true)
+                                .OnComplete(() => entity.isAnimating = false);
+                        });
                 });
-            
-            entity.RemoveView();
         }
     }
 }

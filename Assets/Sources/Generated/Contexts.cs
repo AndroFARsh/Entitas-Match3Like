@@ -64,7 +64,7 @@ public partial class Contexts {
 
     [Entitas.CodeGeneration.Attributes.PostConstructor]
     public void InitializeEntityIndices() {
-        game.AddEntityIndex(new Entitas.EntityIndex<GameEntity, UnityEngine.Vector2>(
+        game.AddEntityIndex(new Entitas.EntityIndex<GameEntity, Game.IntVector2>(
             Position,
             game.GetGroup(GameMatcher.Position),
             (e, c) => ((Game.PositionComponent)c).value));
@@ -73,8 +73,8 @@ public partial class Contexts {
 
 public static class ContextsExtensions {
 
-    public static System.Collections.Generic.HashSet<GameEntity> GetEntitiesWithPosition(this GameContext context, UnityEngine.Vector2 value) {
-        return ((Entitas.EntityIndex<GameEntity, UnityEngine.Vector2>)context.GetEntityIndex(Contexts.Position)).GetEntities(value);
+    public static System.Collections.Generic.HashSet<GameEntity> GetEntitiesWithPosition(this GameContext context, Game.IntVector2 value) {
+        return ((Entitas.EntityIndex<GameEntity, Game.IntVector2>)context.GetEntityIndex(Contexts.Position)).GetEntities(value);
     }
 }
 //------------------------------------------------------------------------------

@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Entitas;
 using Smooth.Algebraics;
 using Smooth.Foundations.PatternMatching.GeneralMatcher;
@@ -10,11 +9,10 @@ using static System.Math;
 using Random = UnityEngine.Random;
 using Tuple = Smooth.Algebraics.Tuple;
 
-namespace Game.Board.Systems
+namespace Game.View.Systems
 {
     public class InitCameraPositionSystem : ReactiveSystem<GameEntity>
     {
-
         public InitCameraPositionSystem(Contexts contexts) : base(contexts.game)
         {
         }
@@ -26,7 +24,7 @@ namespace Game.Board.Systems
 
         protected override bool Filter(GameEntity entity)
         {
-            return true;
+            return entity.hasBoard;
         }
 
         protected override void Execute(List<GameEntity> entities)
@@ -34,8 +32,13 @@ namespace Game.Board.Systems
             entities
                 .Slinq()
                 .Select(e => e.board.value.Size)
-                .Select(size => new Vector3((size.Columns - 1) * 0.5f, (size.Rows - 1) * 0.5f,
-                    Camera.main.transform.position.z))
+                .Select(size => new Vector3
+                    {
+                        x = (size.Columns - 1) * 0.5f,
+                        y = (size.Rows - 1) * 0.5f,
+                        z = Camera.main.transform.position.z
+                    }
+                )
                 .ForEach(pos => Camera.main.transform.position = pos);
         }
     }

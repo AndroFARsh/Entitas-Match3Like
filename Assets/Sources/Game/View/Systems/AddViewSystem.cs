@@ -13,28 +13,29 @@ namespace  Game.View.Systems
         
         private readonly Transform _container = new GameObject(NAME).transform;
         private readonly GameContext _context;
-        
+        private readonly IGroup<GameEntity> _group;
+
         public AddViewSystem(Contexts contexts) : base(contexts.game)
         {
             _context = contexts.game;
+            _group = _context.GetGroup(GameMatcher.Item);
         }
 
         protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context)
         {
-            return context.CreateCollector(GameMatcher.Sprite);
+            return context.CreateCollector(GameMatcher.AnyOf(GameMatcher.Item, GameMatcher.Intialized), GroupEvent.Added);
         }
 
         protected override bool Filter(GameEntity entity)
         {
-            return _context.hasBoard && 
-                   !entity.hasView && 
-                   !entity.isReomve;
+            return _context.isIntialized;
         }
 
         protected override void Execute(List<GameEntity> entities)
         {
-            entities
+            _group.GetEntities()
                 .Slinq()
+                .Where(e => !e.hasView)
                 .ForEach(e =>
                     {
                         Object.Instantiate(_context.board.value.Items.Prefab)
