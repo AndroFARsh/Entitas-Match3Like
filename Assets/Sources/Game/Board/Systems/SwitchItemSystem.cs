@@ -6,7 +6,7 @@ using Smooth.Slinq;
 using UnityEngine;
 using static GameMatcher;
 
-namespace Game.View.Systems
+namespace Game.Board.Systems
 {
     public class SwitchItemSystem : ReactiveSystem<GameEntity>
     {
@@ -29,7 +29,7 @@ namespace Game.View.Systems
 
         protected override bool Filter(GameEntity entity)
         {
-            return entity.hasView;
+            return entity.hasPosition;
         }
 
         protected override void Execute(List<GameEntity> entities)

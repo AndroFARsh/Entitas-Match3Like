@@ -5,7 +5,7 @@ using Smooth.Slinq;
 using UnityEngine;
 using static InputMatcher;
 
-namespace Input.Components.Systems
+namespace Game.Board.Systems
 {
     public class SelectItemSystem: ReactiveSystem<InputEntity>
     {

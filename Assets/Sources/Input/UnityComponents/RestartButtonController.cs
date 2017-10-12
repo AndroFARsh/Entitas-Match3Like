@@ -1,8 +1,5 @@
-﻿using Game;
-using Smooth.Algebraics;
-using Smooth.Slinq;
+﻿using Smooth.Algebraics;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Match3Like
 {

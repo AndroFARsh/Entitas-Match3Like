@@ -16,6 +16,9 @@ namespace Game.Board
             
             Add(new CheckBoardInitializationSystem(contexts));
             Add(new CheckGameOverSystem(contexts));
+
+            Add(new SelectItemSystem(contexts));
+            Add(new SwitchItemSystem(contexts));
             
             Add(new RegenBoardItemSystem(contexts));
 

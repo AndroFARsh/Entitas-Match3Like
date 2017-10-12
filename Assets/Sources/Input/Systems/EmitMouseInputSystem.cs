@@ -6,7 +6,7 @@ using Smooth.Slinq;
 using UniInput = UnityEngine.Input;
 using UnityEngine;
 
-namespace Input.Components.Systems
+namespace Input.Systems
 {
     public class EmitMouseInputSystem : IInitializeSystem, IExecuteSystem
     {
