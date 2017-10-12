@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Entitas;
 using Smooth.Slinq;
-using UnityEngine;
 
 namespace Game.Board.Systems
 {
@@ -19,7 +18,7 @@ namespace Game.Board.Systems
         
         public void Execute()
         {
-            if (_context.GetGroup(GameMatcher.Animating).count != 0)
+            if (_context.isBusy)
                 return;
             
             // Search vertical lines

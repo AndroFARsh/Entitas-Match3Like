@@ -16,9 +16,10 @@ namespace Game.Board.Systems
 
         private bool IsNotScip()
         {
-            return _context.hasBoard && !_context.boardEntity.isIntialize
+            return _context.hasBoard 
+                   && _context.isIntialized
+                   && !_context.isBusy
                    && _group.count == _context.board.value.Size.Items
-                   && _context.GetGroup(GameMatcher.Animating).count == 0
                    && !_group.GetEntities().Slinq().Where(e => !e.hasView).Any()
                    && !_group.GetEntities().Slinq().Where(e => e.isRemove).Any();
         }

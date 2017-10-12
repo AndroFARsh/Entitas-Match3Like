@@ -1,14 +1,7 @@
 ﻿using System.Collections.Generic;
 using Entitas;
-using Smooth.Algebraics;
-using Smooth.Foundations.PatternMatching.GeneralMatcher;
 using Smooth.Slinq;
-using Smooth.Slinq.Context;
 using Tools;
-using UnityEngine;
-using static System.Math;
-using Random = UnityEngine.Random;
-using Tuple = Smooth.Algebraics.Tuple;
 
 namespace Game.Board.Systems
 {
@@ -37,8 +30,6 @@ namespace Game.Board.Systems
                 .Slinq()
                 .ForEach(entity =>
                 {
-                    entity.isIntialize = true;
-
                     var config = entity.board.value;
                     Utils.Range(config.Size.Columns).Slinq()
                         .SelectMany(column => Utils.Range(config.Size.Rows)

@@ -8,11 +8,19 @@ namespace Match3Like
 {
     public class GameController : MonoBehaviour
     {
+        [SerializeField]
+        private GameConfigBlueprint _config;
+        
         private Systems _systems;
         
         private void Start()
         {
             var contexts = Contexts.sharedInstance;
+            contexts.game.SetConfig(_config);
+            var entity = contexts.game.CreateEntity();
+            entity.isGameController = true;
+            entity.AddView(gameObject);
+            
             _systems = new Feature("Game Systems")
                 // Game 
                 .Add(new GameSystems(contexts))

@@ -10,25 +10,31 @@ public static class GameComponentsLookup {
 
     public const int Animating = 0;
     public const int Board = 1;
-    public const int GameOver = 2;
-    public const int Interactive = 3;
-    public const int Intialize = 4;
-    public const int Item = 5;
-    public const int Position = 6;
-    public const int Remove = 7;
-    public const int Score = 8;
-    public const int Selected = 9;
-    public const int Sprite = 10;
-    public const int View = 11;
+    public const int Busy = 2;
+    public const int Config = 3;
+    public const int GameController = 4;
+    public const int GameOver = 5;
+    public const int Interactive = 6;
+    public const int Intialized = 7;
+    public const int Item = 8;
+    public const int Position = 9;
+    public const int Remove = 10;
+    public const int Score = 11;
+    public const int Selected = 12;
+    public const int Sprite = 13;
+    public const int View = 14;
 
-    public const int TotalComponents = 12;
+    public const int TotalComponents = 15;
 
     public static readonly string[] componentNames = {
         "Animating",
         "Board",
+        "Busy",
+        "Config",
+        "GameController",
         "GameOver",
         "Interactive",
-        "Intialize",
+        "Intialized",
         "Item",
         "Position",
         "Remove",
@@ -41,9 +47,12 @@ public static class GameComponentsLookup {
     public static readonly System.Type[] componentTypes = {
         typeof(Game.AnimatingComponent),
         typeof(Game.BoardComponent),
+        typeof(Game.BusyComponent),
+        typeof(Game.ConfigComponent),
+        typeof(Game.GameControllerComponent),
         typeof(Game.GameOverComponent),
         typeof(Game.InteractiveComponent),
-        typeof(Game.IntializeComponent),
+        typeof(Game.IntializedComponent),
         typeof(Game.ItemComponent),
         typeof(Game.PositionComponent),
         typeof(Game.RemoveComponent),

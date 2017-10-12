@@ -9,7 +9,7 @@ namespace  Game.View.Systems
 {
     public class SetSpriteSystem : ReactiveSystem<GameEntity>
     {
-        private GameContext _context;
+        private readonly GameContext _context;
 
         public SetSpriteSystem(Contexts contexts) : base(contexts.game)
         {

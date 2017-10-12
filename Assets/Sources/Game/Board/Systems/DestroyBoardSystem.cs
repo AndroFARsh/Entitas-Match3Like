@@ -1,9 +1,5 @@
-﻿using System.Collections.Generic;
-using Entitas;
-using Entitas.Unity;
+﻿using Entitas;
 using Smooth.Algebraics;
-using Smooth.Slinq;
-using Object = UnityEngine.Object;
 
 namespace Game.Board.Systems
 {

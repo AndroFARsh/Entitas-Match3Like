@@ -23,7 +23,7 @@ namespace Game.Board.Systems
 
         protected override bool Filter(GameEntity entity)
         {
-            return _context.boardEntity.isIntialize;
+            return !_context.isIntialized;
         }
 
         protected override void Execute(List<GameEntity> entities)

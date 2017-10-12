@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace  Game.View.Systems
 {
-    public class AddViewSystem : IExecuteSystem
+    public class AddViewSystem : ReactiveSystem<GameEntity>
     {
         private const string NAME = "Board";
         
@@ -15,21 +15,24 @@ namespace  Game.View.Systems
         private readonly GameContext _context;
         private readonly IGroup<GameEntity> _group;
 
-        public AddViewSystem(Contexts contexts)
+        public AddViewSystem(Contexts contexts) : base(contexts.game)
         {
             _context = contexts.game;
             _group = _context.GetGroup(GameMatcher.Item);
         }
 
-        private bool IsExecute()
+        protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context)
         {
-            return _context.hasBoard && !_context.boardEntity.isIntialize && _group.count > 0;
+            return context.CreateCollector(GameMatcher.AnyOf(GameMatcher.Item, GameMatcher.Intialized), GroupEvent.Added);
         }
 
-        public void Execute()
+        protected override bool Filter(GameEntity entity)
         {
-            if (!IsExecute()) return;
-            
+            return _context.isIntialized;
+        }
+
+        protected override void Execute(List<GameEntity> entities)
+        {
             _group.GetEntities()
                 .Slinq()
                 .Where(e => !e.hasView)

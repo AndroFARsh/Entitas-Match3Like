@@ -1,7 +1,6 @@
 ﻿using Entitas;
 using Smooth.Foundations.PatternMatching.GeneralMatcher;
 using Smooth.Slinq;
-using Random = UnityEngine.Random;
 
 namespace Game.Board.Systems
 {
@@ -18,27 +17,25 @@ namespace Game.Board.Systems
 
         public void Execute()
         {
-            if (!_context.hasBoard || !_context.boardEntity.isIntialize)
+            if (!_context.hasBoard || _context.isIntialized)
                 return;
 
-            if (_group.count == 0)
-            {
-                _context.boardEntity.isIntialize = false;
-                return;
-            }
+            _group.count
+                .Match()
+                .Where(count => count != 0)
+                .Do(_ => _group.GetEntities()
+                    .Slinq()
+                    .Select(GetPositionAndDestroy)
+                    .ForEach(pos => _context.CreateItem(pos, _context.board.value.Items)))
+                .Else(_ => _context.isIntialized = true)
+                .Exec();
+        }
 
-            var pieces = _context.board.value.Items;
-            _group.GetEntities()
-                .Slinq()
-                .Select(entity => {
-                    var pos = entity.position.value;
-                    entity.Destroy();
-                    return pos;
-                })
-                .ForEach(pos =>
-                {
-                    _context.CreateItem(pos, pieces);
-                });
+        private static IntVector2 GetPositionAndDestroy(GameEntity entity)
+        {
+            var pos = entity.position.value;
+            entity.Destroy();
+            return pos;
         }
     }
 }

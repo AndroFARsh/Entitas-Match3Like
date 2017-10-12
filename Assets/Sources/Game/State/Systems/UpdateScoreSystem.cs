@@ -5,7 +5,7 @@ using static GameMatcher;
 
 namespace Game.State.Systems
 {
-    public class UpdateScoreSystem: ReactiveSystem<GameEntity>
+    public class UpdateScoreSystem : ReactiveSystem<GameEntity>
     {
         private readonly GameContext _context;
 
@@ -21,7 +21,9 @@ namespace Game.State.Systems
 
         protected override bool Filter(GameEntity entity)
         {
-            return _context.hasBoard && !_context.boardEntity.isIntialize;
+            return _context.hasBoard
+                   && _context.isIntialized
+                   && !_context.isGameOver;
         }
 
         protected override void Execute(List<GameEntity> entities)

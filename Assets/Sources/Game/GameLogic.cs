@@ -4,7 +4,6 @@ using Entitas;
 using Smooth.Foundations.PatternMatching.GeneralMatcher;
 using Smooth.Slinq;
 using Smooth.Slinq.Context;
-using Tools;
 using UnityEngine;
 
 namespace Game
@@ -147,11 +146,10 @@ namespace Game
                 .Else(_ => _)
                 .Result()
                 .MatchTo<Tuple<IList<GameEntity>, GameEntity>, bool>()
-                .Where(_ => _.Item1.Count == 0 ||
-                            (_.Item1.Count == 1 && !_.Item1[0].sprite.value.Equals(_.Item2.sprite.value)))
+                .Where(_ => _.Item1.Count == 0 || _.Item1.Count == 1 && !_.Item1[0].sprite.value.Equals(_.Item2.sprite.value))
                 .Return(_ => UpdateBuffer(_.Item2, _.Item1))
-                .Where(_ => (_.Item1.Count == 1 && _.Item1[0].sprite.value.Equals(_.Item2.sprite.value)) ||
-                            (_.Item1.Count == 2 && !_.Item1[0].sprite.value.Equals(_.Item2.sprite.value)))
+                .Where(_ => _.Item1.Count == 1 && _.Item1[0].sprite.value.Equals(_.Item2.sprite.value) ||
+                            _.Item1.Count == 2 && !_.Item1[0].sprite.value.Equals(_.Item2.sprite.value))
                 .Return(_ => UpdateBuffer(_.Item2, _.Item1, 0))
                 .Where(_ => _.Item1.Count == 2 && _.Item1[0].sprite.value.Equals(_.Item2.sprite.value))
                 .Return(_ =>

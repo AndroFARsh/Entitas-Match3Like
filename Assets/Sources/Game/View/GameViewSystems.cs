@@ -16,6 +16,11 @@ namespace Game.View
             Add(new SelectViewSystem(contexts));
             Add(new SwitchItemSystem(contexts));
             Add(new AnimatePositionSystem(contexts));
+
+            Add(new SelectItemAudioSystem(contexts));
+            Add(new RemoveItemAudioSystem(contexts));
+            
+            Add(new BusySystem(contexts));
         }
     }
 }

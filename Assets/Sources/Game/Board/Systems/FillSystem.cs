@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
 using Entitas;
-using Smooth.Foundations.PatternMatching.GeneralMatcher;
 using Smooth.Slinq;
-using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Game.Board.Systems
 {
@@ -25,9 +22,9 @@ namespace Game.Board.Systems
 
         protected override bool Filter(GameEntity entity)
         {
-            return !_context.isGameOver &&
-                   _context.hasBoard &&
-                   !_context.boardEntity.isIntialize;
+            return !_context.isGameOver 
+                   && _context.hasBoard 
+                   && _context.isIntialized;
         }
 
         protected override void Execute(List<GameEntity> entities)
@@ -48,7 +45,7 @@ namespace Game.Board.Systems
         }
 
         public void Cleanup()
-        {   
+        {
             _buffer
                 .Slinq()
                 .ForEach(e => e.Destroy());

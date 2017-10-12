@@ -4,6 +4,15 @@ using UnityEngine;
 
 namespace Game
 {   
+    [Game, Unique]
+    public class ConfigComponent : IComponent
+    {
+        public GameConfigBlueprint value;
+    }
+    
+    [Game, Unique]
+    public class GameControllerComponent : IComponent {}
+  
      
     [Game, Unique]
     public class BoardComponent : IComponent
@@ -11,8 +20,13 @@ namespace Game
         public LevelBlueprint value;
     }
     
-    [Game]
-    public class IntializeComponent : IComponent
+    [Game, Unique]
+    public class IntializedComponent : IComponent
+    {
+    }
+    
+    [Game, Unique]
+    public class BusyComponent : IComponent
     {
     }
     

@@ -20,7 +20,9 @@ namespace Game.Board.Systems
 
         protected override bool Filter(GameEntity entity)
         {
-            return !_context.isGameOver && _context.hasBoard && !_context.boardEntity.isIntialize;
+            return !_context.isGameOver 
+                   && _context.hasBoard 
+                   && _context.isIntialized;
         }
 
         protected override void Execute(List<GameEntity> entities)
@@ -46,7 +48,7 @@ namespace Game.Board.Systems
             {
                 pos = pos + IntVector2.Up;
                 var items = _context.GetEntitiesWithPosition(pos);
-                if (items.Count != 0)
+                if (items.Count != 0) 
                 {
                     items.Slinq().ToList().Slinq()
                         .ForEach((e, p) => e.ReplacePosition(p), emptyPos);
